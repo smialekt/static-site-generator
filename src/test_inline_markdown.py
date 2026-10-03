@@ -1,6 +1,6 @@
 import unittest
 from textnode import TextNode, TextType
-from inline_markdown import split_nodes_delimiter
+from inline_markdown import split_nodes_delimiter, extract_markdown_images, extract_markdown_links
 
 
 class TestInlineMarkdown(unittest.TestCase):
@@ -51,3 +51,41 @@ class TestInlineMarkdown(unittest.TestCase):
             expected,
             split_nodes_delimiter(old_nodes, "_", TextType.ITALIC)
         )
+
+    def test_extract_markdown_images(self):
+        matches = extract_markdown_images(
+            "This is text with an ![image](https://i.imgur.com/zjjcJKZ.png)"
+        )
+        self.assertListEqual(
+            [("image", "https://i.imgur.com/zjjcJKZ.png")], matches)
+
+    def test_extract_markdown_images_multiple(self):
+        text = "This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif) and ![obi wan](https://i.imgur.com/fJRm4Vk.jpeg)"
+        matches = [
+            ('rick roll', 'https://i.imgur.com/aKaOqIh.gif'),
+            ('obi wan', 'https://i.imgur.com/fJRm4Vk.jpeg')
+        ]
+        self.assertEqual(extract_markdown_images(text), matches)
+
+    def test_extract_markdown_images_empty(self):
+        text = "There are no images [ ) []"
+        self.assertEqual(extract_markdown_images(text), [])
+
+    def test_extract_markdown_links(self):
+        matches = extract_markdown_links(
+            "This is text with an [image](https://i.imgur.com/zjjcJKZ.png)"
+        )
+        self.assertListEqual(
+            [("image", "https://i.imgur.com/zjjcJKZ.png")], matches)
+
+    def test_extract_markdown_links_multiple(self):
+        text = "This is text with a [rick roll](https://i.imgur.com/aKaOqIh.gif) and [obi wan](https://i.imgur.com/fJRm4Vk.jpeg)"
+        matches = [
+            ('rick roll', 'https://i.imgur.com/aKaOqIh.gif'),
+            ('obi wan', 'https://i.imgur.com/fJRm4Vk.jpeg')
+        ]
+        self.assertEqual(extract_markdown_links(text), matches)
+
+    def test_extract_markdown_links_empty(self):
+        text = "There are no links [ ) []"
+        self.assertEqual(extract_markdown_links(text), [])
