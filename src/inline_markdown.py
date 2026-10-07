@@ -102,8 +102,3 @@ def text_to_textnodes(text: str) -> list[TextNode]:
         result = fn(result)
 
     return result
-
-
-def markdown_to_blocks(markdown: str) -> list[str]:
-    blocks = markdown.split("\n\n")
-    return [s for block in blocks if (s := block.strip())]
