@@ -4,9 +4,9 @@ import re
 
 
 class BlockType(Enum):
-    PARAGRAPH = 1
-    HEADING = 2
-    CODE = 3
+    PARAGRAPH = "p"
+    HEADING = "h"
+    CODE = ""
     QUOTE = 4
     UNORDERED_LIST = 5
     ORDERED_LIST = 6
@@ -35,7 +35,7 @@ def block_to_block_type(block: str) -> BlockType:
 
 
 def is_code_block(lines: list[str]) -> bool:
-    if len(lines) < 3 or len(lines) % 2 != 1:
+    if len(lines) < 3:
         return False
 
     if not lines[0].startswith("```") and not lines[-1].startswith("```"):

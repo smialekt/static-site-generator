@@ -25,6 +25,17 @@ class HtmlNode:
             f"children={self.children!r}, props={self.props!r})"
         )
 
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, HtmlNode):
+            return False
+
+        return (
+            self.tag == other.tag
+            and self.value == other.value
+            and self.children == other.children
+            and self.props == other.props
+        )
+
 
 class LeafNode(HtmlNode):
     def __init__(

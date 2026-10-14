@@ -1,6 +1,6 @@
 from enum import Enum
 
-from htmlnode import LeafNode
+from htmlnode import HtmlNode, LeafNode
 
 
 class TextType(Enum):
@@ -32,7 +32,7 @@ class TextNode:
         return f"TextNode({self.text!r}, {self.text_type.value}, {self.url!r})"
 
 
-def text_node_to_html_node(text_node: TextNode) -> LeafNode:
+def text_node_to_html_node(text_node: TextNode) -> HtmlNode:
     tag = text_node.text_type.value
     params = {}
     inner_text = text_node.text
