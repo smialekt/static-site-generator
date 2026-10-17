@@ -1,6 +1,6 @@
 import unittest
 
-from block_markdown import block_to_block_type, markdown_to_blocks, BlockType
+from block_markdown import block_to_block_type, markdown_to_blocks, extract_title, BlockType
 
 
 class TestBlockMarkdown(unittest.TestCase):
@@ -64,3 +64,32 @@ This is the same paragraph on a new line
                 BlockType.PARAGRAPH,
             ]
         )
+
+    def test_extract_title(self):
+        md = """
+> random quote at the begining
+
+# Actual heading
+
+```
+random
+code block
+```
+"""
+        expected = "Actual heading"
+        actual = extract_title(md)
+        self.assertEqual(expected, actual)
+
+    def test_extract_title_wrong_level(self):
+        md = """
+> random quote at the begining
+
+### Actual heading
+
+```
+random
+code block
+```
+"""
+        with self.assertRaises(Exception):
+            extract_title(md)

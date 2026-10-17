@@ -66,3 +66,13 @@ def is_quote(lines: list[str]) -> bool:
             return False
 
     return True
+
+
+def extract_title(markdown: str) -> str:
+    blocks = markdown_to_blocks(markdown)
+    for block in blocks:
+        type = block_to_block_type(block)
+        if type is BlockType.HEADING and block.count('#') == 1:
+            return block.split(' ', 1)[1]
+
+    raise Exception('No header to extract title from')

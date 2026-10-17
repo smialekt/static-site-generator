@@ -65,7 +65,7 @@ def parse_code(block_text: str) -> HtmlNode:
     children = []
     _ = lines[1:-1]
     for line in lines[1:-1]:
-        text_node = TextNode(line.strip() + '\n', TextType.TEXT)
+        text_node = TextNode(line + '\n', TextType.TEXT)
         children.append(text_node_to_html_node(text_node))
 
     code_node = ParentNode('code', children)

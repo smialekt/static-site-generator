@@ -1,12 +1,34 @@
-from textnode import TextNode, TextType
-
 import os
 import shutil
 from pathlib import Path
 
+from block_markdown import extract_title
+from html_template import inject_html_template
+from markdown_html import markdown_to_html_node
+
 
 def main():
     copy_folder_content("./static", "./public")
+    generate_page("./content/index.md", "./template.html",
+                  "./public/index.html")
+
+
+def generate_page(from_path: str | Path, template_path: str | Path, dest_path: str | Path):
+    print(
+        f"Generating page from {from_path} to {dest_path} using {template_path}")
+    with open(from_path, "r") as md:
+        md_content = md.read()
+    with open(template_path, "r") as template:
+        template_content = template.read()
+
+    html_node = markdown_to_html_node(md_content)
+    generated_html = html_node.to_html()
+    page_title = extract_title(md_content)
+
+    Path(dest_path).parent.mkdir(parents=True, exist_ok=True)
+    with open(dest_path, "w") as final:
+        final.write(inject_html_template(
+            template_content, Title=page_title, Content=generated_html))
 
 
 def copy_folder_content(src: str | Path, dest: str | Path) -> None:

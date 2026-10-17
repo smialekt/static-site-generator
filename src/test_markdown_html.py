@@ -120,15 +120,15 @@ class TestMarkdownHtml(unittest.TestCase):
 
     def test_codeblock(self):
         md = """
-    ```
+```
     This is text that _should_ remain
     the **same** even with inline stuff
-    ```
-    """
+```
+"""
 
         node = markdown_to_html_node(md)
         html = node.to_html()
-        expected_html = "<div><pre><code>This is text that _should_ remain\nthe **same** even with inline stuff\n</code></pre></div>"
+        expected_html = "<div><pre><code>    This is text that _should_ remain\n    the **same** even with inline stuff\n</code></pre></div>"
         self.assertEqual(
             html,
             expected_html,
@@ -154,4 +154,3 @@ class TestMarkdownHtml(unittest.TestCase):
         html = node.to_html()
         expected_html = "<div><ol><li>First item with <b>bold</b></li><li>Second item with <code>code</code></li></ol></div>"
         self.assertEqual(html, expected_html)
-

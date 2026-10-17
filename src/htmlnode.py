@@ -46,8 +46,9 @@ class LeafNode(HtmlNode):
     ) -> None:
         super().__init__(tag, value, None, props)
 
+    # images are leafnodes - is that ok? how to handle them
     def to_html(self) -> str:
-        if not self.value:
+        if self.value is None:
             raise ValueError("LeafNode has to have value")
         if not self.tag:
             return self.value
