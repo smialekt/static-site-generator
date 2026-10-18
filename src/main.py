@@ -9,8 +9,24 @@ from markdown_html import markdown_to_html_node
 
 def main():
     copy_folder_content("./static", "./public")
-    generate_page("./content/index.md", "./template.html",
-                  "./public/index.html")
+    generate_pages_recursive("./content", "./template.html", "./public")
+
+
+def generate_pages_recursive(dir_path_content: str | Path, template_path: str | Path, dest_dir_path):
+
+    for item in os.listdir(dir_path_content):
+        new_source_path = os.path.join(dir_path_content, item)
+
+        if os.path.isfile(new_source_path):
+            item_path = Path(item)
+            new_item_name = item_path.with_suffix('.html')
+
+            generate_page(new_source_path, template_path,
+                          os.path.join(dest_dir_path, new_item_name))
+        else:
+            new_destination_path = os.path.join(dest_dir_path, item)
+            generate_pages_recursive(
+                new_source_path, template_path, new_destination_path)
 
 
 def generate_page(from_path: str | Path, template_path: str | Path, dest_path: str | Path):
