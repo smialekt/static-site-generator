@@ -1,4 +1,5 @@
 import os
+import sys
 import shutil
 from pathlib import Path
 
@@ -8,11 +9,18 @@ from markdown_html import markdown_to_html_node
 
 
 def main():
-    copy_folder_content("./static", "./public")
-    generate_pages_recursive("./content", "./template.html", "./public")
+    if len(sys.argv) != 2:
+        basepath = "/"
+    else:
+        basepath = sys.argv[1]
+
+    print(f'Custom basepath set to {basepath}')
+    copy_folder_content("./static", "./docs")
+    generate_pages_recursive(
+        "./content", "./template.html", "./docs", basepath)
 
 
-def generate_pages_recursive(dir_path_content: str | Path, template_path: str | Path, dest_dir_path):
+def generate_pages_recursive(dir_path_content: str | Path, template_path: str | Path, dest_dir_path, basepath: str | Path):
 
     for item in os.listdir(dir_path_content):
         new_source_path = os.path.join(dir_path_content, item)
@@ -22,14 +30,14 @@ def generate_pages_recursive(dir_path_content: str | Path, template_path: str | 
             new_item_name = item_path.with_suffix('.html')
 
             generate_page(new_source_path, template_path,
-                          os.path.join(dest_dir_path, new_item_name))
+                          os.path.join(dest_dir_path, new_item_name), basepath)
         else:
             new_destination_path = os.path.join(dest_dir_path, item)
             generate_pages_recursive(
-                new_source_path, template_path, new_destination_path)
+                new_source_path, template_path, new_destination_path, basepath)
 
 
-def generate_page(from_path: str | Path, template_path: str | Path, dest_path: str | Path):
+def generate_page(from_path: str | Path, template_path: str | Path, dest_path: str | Path, basepath: str | Path):
     print(
         f"Generating page from {from_path} to {dest_path} using {template_path}")
     with open(from_path, "r") as md:
@@ -44,7 +52,7 @@ def generate_page(from_path: str | Path, template_path: str | Path, dest_path: s
     Path(dest_path).parent.mkdir(parents=True, exist_ok=True)
     with open(dest_path, "w") as final:
         final.write(inject_html_template(
-            template_content, Title=page_title, Content=generated_html))
+            template_content, basepath, Title=page_title, Content=generated_html))
 
 
 def copy_folder_content(src: str | Path, dest: str | Path) -> None:

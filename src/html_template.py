@@ -1,4 +1,5 @@
 from typing import Literal, TypedDict, Unpack
+from pathlib import Path
 import re
 
 
@@ -10,10 +11,13 @@ class AllowedKwargs(TypedDict, total=False):
     Content: str
 
 
-def inject_html_template(template: str, **kwargs: Unpack[AllowedKwargs]) -> str:
-    return re.sub(
+def inject_html_template(template: str, basepath: str | Path, **kwargs: Unpack[AllowedKwargs]) -> str:
+    new_template = re.sub(
         r"\{\{\s*(\w+)\s*\}\}",
         lambda m: str(kwargs.get(m.group(1), m.group(0))),
         template,
         flags=re.IGNORECASE
     )
+    new_template = new_template.replace(
+        'href="/', f'href="{basepath}').replace('src="/', f'src="{basepath}')
+    return new_template
